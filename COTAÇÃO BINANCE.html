@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cotação USDT/BRL - Binance</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #00ffae;
+    }
+
+    .price-box {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px auto;
+      width: 340px;
+      box-shadow: 0 0 12px rgba(0, 255, 174, 0.2);
+    }
+
+    .label {
+      font-size: 16px;
+      margin-bottom: 6px;
+      color: #ccc;
+    }
+
+    .value {
+      font-size: 24px;
+      color: #00ffae;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .input-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="number"] {
+      padding: 5px;
+      width: 80px;
+      font-size: 15px;
+      border-radius: 4px;
+      border: none;
+    }
+
+    button {
+      padding: 5px 10px;
+      font-size: 14px;
+      background-color: #00ffae;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cotação USDT/BRL - Binance</h1>
+
+  <div class="price-box">
+    <div class="label">Binance</div>
+    <div class="value" id="standard">Carregando...</div>
+  </div>
+
+  <!-- Caixa 1 -->
+  <div class="price-box">
+    <div class="label">Binance +0,013</div>
+    <div class="value" id="p13">-</div>
+    <div class="input-group">
+      <input type="number" id="percent1" value="0.013" step="0.001">
+      <button onclick="aplicarPercentual('percent1','p13')">Aplicar</button>
+    </div>
+  </div>
+
+  <!-- Caixa 2 -->
+  <div class="price-box">
+    <div class="label">Binance +0,020</div>
+    <div class="value" id="p20">-</div>
+    <div class="input-group">
+      <input type="number" id="percent2" value="0.020" step="0.001">
+      <button onclick="aplicarPercentual('percent2','p20')">Aplicar</button>
+    </div>
+  </div>
+
+  <!-- Caixa 3 -->
+  <div class="price-box">
+    <div class="label">Binance +0,023</div>
+    <div class="value" id="p23">-</div>
+    <div class="input-group">
+      <input type="number" id="percent3" value="0.023" step="0.001">
+      <button onclick="aplicarPercentual('percent3','p23')">Aplicar</button>
+    </div>
+  </div>
+
+  <!-- Caixa 4 -->
+  <div class="price-box">
+    <div class="label">Binance +0,025</div>
+    <div class="value" id="p25">-</div>
+    <div class="input-group">
+      <input type="number" id="percent4" value="0.025" step="0.001">
+      <button onclick="aplicarPercentual('percent4','p25')">Aplicar</button>
+    </div>
+  </div>
+
+  <script>
+    let precoBase = 0;
+
+    const ws = new WebSocket('wss://stream.binance.com:9443/ws/usdtbrl@ticker');
+
+    ws.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      precoBase = parseFloat(data.c);
+      document.getElementById('standard').textContent = formatarBRL(precoBase);
+
+      aplicarPercentual('percent1', 'p13');
+      aplicarPercentual('percent2', 'p20');
+      aplicarPercentual('percent3', 'p23');
+      aplicarPercentual('percent4', 'p25');
+    };
+
+    function aplicarPercentual(inputId, outputId) {
+      const valor = parseFloat(document.getElementById(inputId).value) || 0;
+      const resultado = precoBase + valor;
+      document.getElementById(outputId).textContent = formatarBRL(resultado);
+    }
+
+    function formatarBRL(valor) {
+      return valor.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+        minimumFractionDigits: 4
+      });
+    }
+  </script>
+
+</body>
+</html>
